@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useCallback } from "react"
 import { Upload, Sparkles, ImageIcon, Download, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -20,6 +20,66 @@ export function ConverterSection() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // 文件处理函数
+  const handleFileUpload = useCallback((file: File) => {
+    // 验证文件类型
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    if (!validTypes.includes(file.type)) {
+      alert('请选择 JPG、PNG 或 WEBP 格式的图片')
+      return
+    }
+
+    // 验证文件大小 (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('图片大小不能超过 10MB')
+      return
+    }
+
+    // 读取文件并设置为预览图
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const result = e.target?.result as string
+      setUploadedImage(result)
+      setGeneratedImage(null) // 重置生成结果
+    }
+    reader.readAsDataURL(file)
+  }, [])
+
+  // 文件选择处理
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      handleFileUpload(file)
+    }
+  }, [handleFileUpload])
+
+  // 拖拽处理
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }, [])
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+  }, [])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+
+    const file = e.dataTransfer.files[0]
+    if (file) {
+      handleFileUpload(file)
+    }
+  }, [handleFileUpload])
+
+  const openFileDialog = useCallback(() => {
+    fileInputRef.current?.click()
+  }, [])
 
   return (
     <section id="image-to-sketch" className="bg-gray-50 py-16 md:py-24">
@@ -44,10 +104,27 @@ export function ConverterSection() {
 
               {!uploadedImage ? (
                 <div className="space-y-4">
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-gray-400 transition-colors cursor-pointer">
-                    <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <div
+                    className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors cursor-pointer ${
+                      isDragging
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                    onClick={openFileDialog}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                  >
+                    <Upload className={`h-12 w-12 mx-auto mb-4 ${isDragging ? 'text-blue-500' : 'text-gray-400'}`} />
                     <p className="text-gray-700 font-medium mb-1">Click to upload or drag image here</p>
                     <p className="text-sm text-gray-500">Supports JPG, PNG, WEBP formats (Max 10MB)</p>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      className="hidden"
+                      accept="image/jpeg,image/jpg,image/png,image/webp"
+                      onChange={handleFileSelect}
+                    />
                   </div>
                   <div className="text-center">
                     <Button
