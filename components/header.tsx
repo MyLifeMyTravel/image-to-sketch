@@ -1,8 +1,24 @@
-import Link from "next/link"
+"use client"
+
 import { Camera } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function Header() {
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }
+  }
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
+    e.preventDefault()
+    scrollToSection(sectionId)
+  }
+
   return (
     <header className="border-b border-gray-200">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -13,21 +29,41 @@ export function Header() {
           </div>
 
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="#styles" className="text-sm text-gray-600 hover:text-gray-900">
+            <a
+              href="#styles"
+              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              onClick={(e) => handleNavClick(e, 'styles')}
+            >
               Styles
-            </Link>
-            <Link href="#use-cases" className="text-sm text-gray-600 hover:text-gray-900">
+            </a>
+            <a
+              href="#use-cases"
+              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              onClick={(e) => handleNavClick(e, 'use-cases')}
+            >
               Use Cases
-            </Link>
-            <Link href="#pricing" className="text-sm text-gray-600 hover:text-gray-900">
+            </a>
+            <a
+              href="#pricing"
+              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              onClick={(e) => handleNavClick(e, 'pricing')}
+            >
               Pricing
-            </Link>
-            <Link href="#faq" className="text-sm text-gray-600 hover:text-gray-900">
+            </a>
+            <a
+              href="#faq"
+              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              onClick={(e) => handleNavClick(e, 'faq')}
+            >
               FAQ
-            </Link>
-            <Link href="#blog" className="text-sm text-gray-600 hover:text-gray-900">
+            </a>
+            <a
+              href="#blog"
+              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              onClick={(e) => handleNavClick(e, 'blog')}
+            >
               Blog
-            </Link>
+            </a>
           </nav>
 
           <Button variant="outline" className="text-sm bg-transparent">

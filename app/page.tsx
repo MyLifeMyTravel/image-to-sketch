@@ -1,6 +1,7 @@
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { ConverterSection } from "@/components/converter-section"
+import { StyleShowcase } from "@/components/style-showcase"
 import { StatsSection } from "@/components/stats-section"
 
 export default function Home() {
@@ -10,6 +11,7 @@ export default function Home() {
       <main>
         <HeroSection />
         <ConverterSection />
+        <StyleShowcase />
         <StatsSection />
       </main>
     </div>

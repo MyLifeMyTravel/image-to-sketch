@@ -1,8 +1,20 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 
 export function HeroSection() {
+  const scrollToConverter = () => {
+    const element = document.getElementById('image-to-sketch')
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }
+  }
+
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <section id="hero" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
       <div className="grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-6 text-balance">
@@ -13,7 +25,11 @@ export function HeroSection() {
             cartoon styles, and coloring book pages. Perfect for artists, educators, social media creators, and creative
             enthusiasts.
           </p>
-          <Button size="lg" className="bg-black hover:bg-gray-800 text-white px-8">
+          <Button
+            size="lg"
+            className="bg-black hover:bg-gray-800 text-white px-8"
+            onClick={scrollToConverter}
+          >
             Start Creating Free
           </Button>
         </div>
