@@ -28,37 +28,37 @@ export function StyleShowcase({ className }: StyleShowcaseProps) {
     {
       name: "Realistic Sketch",
       description: "Transform portraits and photos into realistic pencil drawings with authentic shading and texture.",
-      originalImage: "/placeholder.jpg",
+      originalImage: "/cat-sketch-transformation-showing-original-photo-a.jpg",
       stylizedImage: "/realistic-pencil-sketch-of-cat.jpg"
     },
     {
       name: "Line Art",
       description: "Create clean, minimalist line drawings perfect for coloring books and modern art.",
-      originalImage: "/placeholder.jpg",
+      originalImage: "/cat-sketch-transformation-showing-original-photo-a.jpg",
       stylizedImage: "/simple-line-art-sketch-of-cat.jpg"
     },
     {
       name: "Portrait Sketch",
       description: "Professional portrait sketches with enhanced details and artistic expression.",
-      originalImage: "/placeholder.jpg",
+      originalImage: "/cat-sketch-transformation-showing-original-photo-a.jpg",
       stylizedImage: "/portrait-sketch-style.jpg"
     },
     {
       name: "Cartoon Style",
       description: "Turn photos into playful cartoon-style sketches with simplified features and fun artistic flair.",
-      originalImage: "/placeholder.jpg",
+      originalImage: "/cat-sketch-transformation-showing-original-photo-a.jpg",
       stylizedImage: "/cartoon-sketch-style-of-cat.jpg"
     },
     {
       name: "Architectural",
       description: "Convert building photos into clean architectural line drawings perfect for design presentations.",
-      originalImage: "/placeholder.jpg",
+      originalImage: "/cat-sketch-transformation-showing-original-photo-a.jpg",
       stylizedImage: "/architectural-sketch-lines.jpg"
     },
     {
       name: "Gesture Drawing",
       description: "Create dynamic gesture drawings that capture movement and flow with artistic expression.",
-      originalImage: "/placeholder.jpg",
+      originalImage: "/cat-sketch-transformation-showing-original-photo-a.jpg",
       stylizedImage: "/gesture-drawing-sketch.jpg"
     }
   ]
@@ -80,7 +80,7 @@ export function StyleShowcase({ className }: StyleShowcaseProps) {
           {styles.map((style, index) => (
             <div
               key={style.name}
-              className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${
+              className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center ${
                 index % 2 === 1 ? 'lg:grid-flow-col-dense' : ''
               }`}
             >
@@ -103,7 +103,7 @@ export function StyleShowcase({ className }: StyleShowcaseProps) {
                       stylizedImage={style.stylizedImage}
                       originalAlt={`Original image for ${style.name} style`}
                       stylizedAlt={`${style.name} style conversion`}
-                      className="w-full shadow-lg rounded-lg"
+                      className="w-full shadow-xl rounded-xl hover:shadow-2xl transition-shadow duration-300"
                     />
                   </div>
                 </>
@@ -118,7 +118,7 @@ export function StyleShowcase({ className }: StyleShowcaseProps) {
                       stylizedImage={style.stylizedImage}
                       originalAlt={`Original image for ${style.name} style`}
                       stylizedAlt={`${style.name} style conversion`}
-                      className="w-full shadow-lg rounded-lg"
+                      className="w-full shadow-xl rounded-xl hover:shadow-2xl transition-shadow duration-300"
                     />
                   </div>
                   <div className="space-y-6">
@@ -137,13 +137,16 @@ export function StyleShowcase({ className }: StyleShowcaseProps) {
           ))}
         </div>
 
-        <div className="mt-12 text-center">
-          <div className="inline-flex flex-col items-center gap-4 p-6 bg-muted/50 rounded-lg">
-            <h3 className="text-lg font-semibold">Ready to transform your images?</h3>
-            <p className="text-muted-foreground">
+        <div className="mt-16 text-center">
+          <div className="inline-flex flex-col items-center gap-6 p-8 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl border border-blue-100 shadow-lg">
+            <h3 className="text-xl font-semibold text-gray-900">Ready to transform your images?</h3>
+            <p className="text-gray-600 max-w-md">
               Upload your photo and choose from multiple sketch styles to create stunning artistic results.
             </p>
-            <Button onClick={scrollToConverter} className="mt-2">
+            <Button
+              onClick={scrollToConverter}
+              className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl transition-all duration-200 hover:shadow-lg"
+            >
               Try It Now For Free
             </Button>
           </div>
