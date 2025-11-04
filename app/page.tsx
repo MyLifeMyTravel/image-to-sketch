@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <main>
+      <main className="pt-16">
         <HeroSection />
         <ConverterSection />
         <StyleShowcase />
