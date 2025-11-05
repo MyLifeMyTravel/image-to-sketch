@@ -5,21 +5,8 @@ import { Upload, Sparkles, ImageIcon, Download, Share2, ChevronLeft, ChevronRigh
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ImageComparison } from "@/components/image-comparison"
-
-const styles = [
-  { id: 1, name: "Realistic Sketch", preview: "/realistic-pencil-sketch-of-cat.jpg" },
-  { id: 2, name: "Line Art", preview: "/simple-line-art-sketch-of-cat.jpg" },
-  { id: 3, name: "Portrait", preview: "/portrait-sketch-style.jpg" },
-  { id: 4, name: "Cartoon", preview: "/cartoon-sketch-style-of-cat.jpg" },
-  { id: 5, name: "Architectural", preview: "/architectural-sketch-lines.jpg" },
-  { id: 6, name: "Gesture", preview: "/gesture-drawing-sketch.jpg" },
-  { id: 7, name: "Coloring Book", preview: "/simple-line-art-sketch-of-cat.jpg" },
-  { id: 8, name: "Charcoal", preview: "/cartoon-sketch-style-of-cat.jpg" },
-  { id: 9, name: "Ink Style", preview: "/gesture-drawing-sketch.jpg" },
-  { id: 10, name: "Watercolor", preview: "/realistic-pencil-sketch-of-cat.jpg" },
-  { id: 11, name: "Abstract", preview: "/portrait-sketch-style.jpg" },
-  { id: 12, name: "Minimalist", preview: "/architectural-sketch-lines.jpg" },
-]
+import { GoogleGenAI } from "@google/genai"
+import { styles } from "@/config/styles"
 
 export function ConverterSection() {
   const [selectedStyle, setSelectedStyle] = useState(1)
@@ -69,6 +56,95 @@ export function ConverterSection() {
   const openFileDialog = useCallback(() => {
     fileInputRef.current?.click()
   }, [])
+
+  // 下载生成的图片
+  const downloadImage = useCallback(() => {
+    if (!generatedImage) return
+
+    try {
+      // 创建一个临时的链接元素来触发下载
+      const link = document.createElement('a')
+      link.href = generatedImage
+
+      // 从 base64 数据中提取文件类型
+      const mimeType = generatedImage.split(':')[1].split(';')[0]
+      const extension = mimeType.split('/')[1] || 'png'
+
+      // 生成文件名
+      const selectedStyleData = styles.find(s => s.id === selectedStyle)
+      const styleName = selectedStyleData?.name?.replace(/\s+/g, '_').toLowerCase() || 'sketch'
+      const timestamp = new Date().toISOString().slice(0, 10)
+      const filename = `${styleName}_${timestamp}.${extension}`
+
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (error) {
+      console.error('Error downloading image:', error)
+    }
+  }, [generatedImage, selectedStyle])
+
+  // Gemini API 调用函数
+  const generateImage = useCallback(async () => {
+    if (!uploadedImage) return
+
+    setIsGenerating(true)
+    try {
+      // 初始化 Gemini AI
+      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "" })
+
+      // 将 base64 图片转换为可用格式
+      const base64Data = uploadedImage.split(',')[1] // 移除 data:image/...;base64, 前缀
+
+      // 构建提示词 - 按照示例代码的格式
+      const selectedStyleData = styles.find(s => s.id === selectedStyle)
+      const prompt = selectedStyleData?.prompt || "Convert this image into a sketch style drawing."
+
+      // 如果有图片，将图片添加到提示词中
+      const contents = base64Data ? [
+        {
+          text: prompt
+        },
+        {
+          inlineData: {
+            mimeType: "image/jpeg",
+            data: base64Data
+          }
+        }
+      ] : prompt
+
+      // 调用 API - 按照示例代码的方式
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash-image",
+        contents: contents,
+      })
+
+      // 处理响应 - 按照示例代码的方式
+      if (response.candidates && response.candidates.length > 0) {
+        for (const part of response.candidates[0].content.parts) {
+          if (part.text) {
+            console.log(part.text);
+          } else if (part.inlineData) {
+            const imageData = part.inlineData.data;
+            // 直接使用 base64 数据创建 data URL
+            const mimeType = part.inlineData.mimeType || "image/png"
+            setGeneratedImage(`data:${mimeType};base64,${imageData}`)
+            break
+          }
+        }
+      } else {
+        throw new Error("No generated image received")
+      }
+    } catch (error) {
+      console.error("Error generating image:", error)
+      // 如果 API 调用失败，使用示例图片作为后备
+      const selectedStyleData = styles.find(s => s.id === selectedStyle)
+      setGeneratedImage(selectedStyleData?.preview || "/placeholder.svg")
+    } finally {
+      setIsGenerating(false)
+    }
+  }, [uploadedImage, selectedStyle])
 
   return (
     <section id="image-to-sketch" className="bg-gray-50 py-16 md:py-24">
@@ -213,19 +289,7 @@ export function ConverterSection() {
               <Button
                 className="w-full rounded-xl py-6 font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-all"
                 disabled={!uploadedImage || isGenerating}
-                onClick={() => {
-                  if (!uploadedImage) return
-
-                  setIsGenerating(true)
-                  // 模拟生成过程
-                  setTimeout(() => {
-                    // 这里应该是实际的API调用
-                    // 现在使用示例图片来演示
-                    const selectedStyleData = styles.find(s => s.id === selectedStyle)
-                    setGeneratedImage(selectedStyleData?.preview || "/placeholder.svg")
-                    setIsGenerating(false)
-                  }, 2000)
-                }}
+                onClick={generateImage}
               >
                 <div className="flex items-center justify-center gap-2">
                   <Sparkles className="h-5 w-5" />
@@ -251,7 +315,7 @@ export function ConverterSection() {
             <h3 className="mb-4 text-lg font-semibold">Generated Result</h3>
 
             {!uploadedImage ? (
-              <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border-2 border-dashed border-gray-300/25 bg-gray-50/30">
+              <div className="flex min-h-[200px] items-center justify-center rounded-2xl border-2 border-dashed border-gray-300/25 bg-gray-50/30">
                 <div className="flex flex-col items-center gap-3 text-center">
                   <div className="rounded-full bg-gray-100 p-4">
                     <ImageIcon className="h-12 w-12 text-gray-400" />
@@ -265,7 +329,7 @@ export function ConverterSection() {
                 </div>
               </div>
             ) : isGenerating ? (
-              <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border-2 border-dashed border-gray-300/25 bg-gray-50/30">
+              <div className="flex min-h-[200px] items-center justify-center rounded-2xl border-2 border-dashed border-gray-300/25 bg-gray-50/30">
                 <div className="flex flex-col items-center gap-3 text-center">
                   <div className="relative">
                     <div className="w-16 h-16 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
@@ -285,10 +349,15 @@ export function ConverterSection() {
                   stylizedImage={generatedImage}
                   originalAlt="Original uploaded image"
                   stylizedAlt={`Generated ${styles.find(s => s.id === selectedStyle)?.name} sketch`}
-                  className="w-full aspect-[4/3] rounded-2xl overflow-hidden"
+                  className="w-full rounded-2xl overflow-hidden"
                 />
                 <div className="flex items-center justify-end gap-2">
-                  <Button variant="outline" size="sm" className="rounded-lg">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-lg"
+                    onClick={downloadImage}
+                  >
                     <Download className="h-4 w-4 mr-1" />
                     Download
                   </Button>
@@ -299,7 +368,7 @@ export function ConverterSection() {
                 </div>
               </div>
             ) : (
-              <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border-2 border-dashed border-gray-300/25 bg-gray-50/30">
+              <div className="flex min-h-[200px] items-center justify-center rounded-2xl border-2 border-dashed border-gray-300/25 bg-gray-50/30">
                 <div className="flex flex-col items-center gap-3 text-center">
                   <div className="rounded-full bg-gray-100 p-4">
                     <Sparkles className="h-12 w-12 text-gray-400" />

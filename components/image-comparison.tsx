@@ -43,6 +43,9 @@ export function ImageComparison({
   }
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    // 只有左键点击时才触发拖拽（e.button === 0）
+    if (e.button !== 0) return
+
     e.preventDefault()
     setIsDragging(true)
     updateSliderPosition(e)
@@ -139,11 +142,11 @@ export function ImageComparison({
       aria-valuemax={100}
       aria-valuenow={sliderPosition}
     >
-      {/* Original Image (Bottom Layer) */}
+      {/* Original Image (Bottom Layer) - determines container height */}
       <img
         src={originalImage}
         alt={originalAlt}
-        className="h-auto w-full object-cover select-none"
+        className="w-full h-auto object-cover select-none"
         draggable={false}
       />
 
@@ -157,8 +160,12 @@ export function ImageComparison({
         <img
           src={stylizedImage}
           alt={stylizedAlt}
-          className="h-auto w-full object-cover select-none"
+          className="absolute inset-0 w-full h-full object-cover select-none"
           draggable={false}
+          style={{
+            height: '100%',
+            width: '100%'
+          }}
         />
       </div>
 
