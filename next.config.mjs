@@ -6,6 +6,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Configure Turbopack
+  turbopack: {
+    // Empty config to disable webpack fallback
+  },
 }
 
 export default nextConfig
