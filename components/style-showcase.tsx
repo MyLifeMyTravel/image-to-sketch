@@ -4,6 +4,7 @@ import React from 'react'
 import { ImageComparison } from './image-comparison'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { showcases } from '@/config/showcases'
 
 interface StyleShowcaseProps {
   className?: string
@@ -24,45 +25,7 @@ export function StyleShowcase({ className }: StyleShowcaseProps) {
     }
   }
 
-  const styles = [
-    {
-      name: "Realistic Sketch",
-      description: "Transform portraits and photos into realistic pencil drawings with authentic shading and texture.",
-      originalImage: "/cat-sketch-transformation-showing-original-photo-a.jpg",
-      stylizedImage: "/realistic-pencil-sketch-of-cat.jpg"
-    },
-    {
-      name: "Line Art",
-      description: "Create clean, minimalist line drawings perfect for coloring books and modern art.",
-      originalImage: "/cat-sketch-transformation-showing-original-photo-a.jpg",
-      stylizedImage: "/simple-line-art-sketch-of-cat.jpg"
-    },
-    {
-      name: "Portrait Sketch",
-      description: "Professional portrait sketches with enhanced details and artistic expression.",
-      originalImage: "/cat-sketch-transformation-showing-original-photo-a.jpg",
-      stylizedImage: "/portrait-sketch-style.jpg"
-    },
-    {
-      name: "Cartoon Style",
-      description: "Turn photos into playful cartoon-style sketches with simplified features and fun artistic flair.",
-      originalImage: "/cat-sketch-transformation-showing-original-photo-a.jpg",
-      stylizedImage: "/cartoon-sketch-style-of-cat.jpg"
-    },
-    {
-      name: "Architectural",
-      description: "Convert building photos into clean architectural line drawings perfect for design presentations.",
-      originalImage: "/cat-sketch-transformation-showing-original-photo-a.jpg",
-      stylizedImage: "/architectural-sketch-lines.jpg"
-    },
-    {
-      name: "Gesture Drawing",
-      description: "Create dynamic gesture drawings that capture movement and flow with artistic expression.",
-      originalImage: "/cat-sketch-transformation-showing-original-photo-a.jpg",
-      stylizedImage: "/gesture-drawing-sketch.jpg"
-    }
-  ]
-
+  
   return (
     <section id="use-cases" className={`py-16 ${className}`}>
       <div className="container mx-auto px-4">
@@ -77,9 +40,9 @@ export function StyleShowcase({ className }: StyleShowcaseProps) {
         </div>
 
         <div className="space-y-16">
-          {styles.map((style, index) => (
+          {showcases.map((showcase, index) => (
             <div
-              key={style.name}
+              key={showcase.name}
               className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center ${
                 index % 2 === 1 ? 'lg:grid-flow-col-dense' : ''
               }`}
@@ -90,19 +53,19 @@ export function StyleShowcase({ className }: StyleShowcaseProps) {
                   <div className="space-y-6">
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                        {style.name}
+                        {showcase.name}
                       </h3>
                       <p className="text-lg text-gray-600 leading-relaxed">
-                        {style.description}
+                        {showcase.description}
                       </p>
                     </div>
                   </div>
                   <div className="order-first lg:order-last">
                     <ImageComparison
-                      originalImage={style.originalImage}
-                      stylizedImage={style.stylizedImage}
-                      originalAlt={`Original image for ${style.name} style`}
-                      stylizedAlt={`${style.name} style conversion`}
+                      originalImage={showcase.originalImage}
+                      stylizedImage={showcase.stylizedImage}
+                      originalAlt={`Original image for ${showcase.name} style`}
+                      stylizedAlt={`${showcase.name} style conversion`}
                       className="w-full shadow-xl rounded-xl hover:shadow-2xl transition-shadow duration-300"
                     />
                   </div>
@@ -114,20 +77,20 @@ export function StyleShowcase({ className }: StyleShowcaseProps) {
                 <>
                   <div className="order-first lg:order-first">
                     <ImageComparison
-                      originalImage={style.originalImage}
-                      stylizedImage={style.stylizedImage}
-                      originalAlt={`Original image for ${style.name} style`}
-                      stylizedAlt={`${style.name} style conversion`}
+                      originalImage={showcase.originalImage}
+                      stylizedImage={showcase.stylizedImage}
+                      originalAlt={`Original image for ${showcase.name} style`}
+                      stylizedAlt={`${showcase.name} style conversion`}
                       className="w-full shadow-xl rounded-xl hover:shadow-2xl transition-shadow duration-300"
                     />
                   </div>
                   <div className="space-y-6">
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                        {style.name}
+                        {showcase.name}
                       </h3>
                       <p className="text-lg text-gray-600 leading-relaxed">
-                        {style.description}
+                        {showcase.description}
                       </p>
                     </div>
                   </div>

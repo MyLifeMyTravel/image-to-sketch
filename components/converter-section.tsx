@@ -121,7 +121,7 @@ export function ConverterSection() {
       })
 
       // 处理响应 - 按照示例代码的方式
-      if (response.candidates && response.candidates.length > 0) {
+      if (response.candidates && response.candidates.length > 0 && response.candidates[0].content?.parts) {
         for (const part of response.candidates[0].content.parts) {
           if (part.text) {
             console.log(part.text);
