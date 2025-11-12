@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useRef, useCallback } from "react"
-import { Upload, Sparkles, ImageIcon, Download, Share2, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useRef, useCallback, useEffect } from "react"
+import { Upload, Sparkles, ImageIcon, Download, Share2, ChevronLeft, ChevronRight, Palette, Edit3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
 import { ImageComparison } from "@/components/image-comparison"
 import { GoogleGenAI } from "@google/genai"
 import { styles } from "@/config/styles"
@@ -14,7 +15,25 @@ export function ConverterSection() {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)
+  const [isCustomPrompt, setIsCustomPrompt] = useState(false)
+  const [customPrompt, setCustomPrompt] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // 设置textarea固定高度以保持与风格选择区域一致
+  const adjustTextareaHeight = useCallback(() => {
+    const textarea = textareaRef.current
+    if (textarea) {
+      // 固定高度为184px，与风格选择网格高度保持一致
+      textarea.style.height = '184px'
+    }
+  }, [])
+
+  // 处理自定义提示词输入
+  const handleCustomPromptChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCustomPrompt(e.target.value)
+    adjustTextareaHeight()
+  }, [adjustTextareaHeight])
 
   // 文件处理函数
   const handleFileUpload = useCallback((file: File) => {
@@ -97,9 +116,14 @@ export function ConverterSection() {
       // 将 base64 图片转换为可用格式
       const base64Data = uploadedImage.split(',')[1] // 移除 data:image/...;base64, 前缀
 
-      // 构建提示词 - 按照示例代码的格式
-      const selectedStyleData = styles.find(s => s.name === selectedStyle)
-      const prompt = selectedStyleData?.prompt || "Convert this image into a sketch style drawing."
+      // 构建提示词 - 使用自定义提示词或预设风格提示词
+      let prompt: string
+      if (isCustomPrompt && customPrompt.trim()) {
+        prompt = customPrompt.trim()
+      } else {
+        const selectedStyleData = styles.find(s => s.name === selectedStyle)
+        prompt = selectedStyleData?.prompt || "Convert this image into a sketch style drawing."
+      }
 
       // 如果有图片，将图片添加到提示词中
       const contents = base64Data ? [
@@ -144,7 +168,17 @@ export function ConverterSection() {
     } finally {
       setIsGenerating(false)
     }
-  }, [uploadedImage, selectedStyle])
+  }, [uploadedImage, selectedStyle, isCustomPrompt, customPrompt])
+
+  // 当切换到自定义模式时调整textarea高度
+  useEffect(() => {
+    if (isCustomPrompt && textareaRef.current) {
+      // 使用setTimeout确保DOM已更新
+      setTimeout(() => {
+        adjustTextareaHeight()
+      }, 0)
+    }
+  }, [isCustomPrompt, adjustTextareaHeight])
 
   return (
     <section id="image-to-sketch" className="bg-gray-50 py-16 md:py-24">
@@ -208,14 +242,39 @@ export function ConverterSection() {
             </div>
 
             <div className="rounded-3xl border bg-white/80 p-6 shadow-sm backdrop-blur">
-              <h3 className="mb-4 text-lg font-semibold">Choose Style</h3>
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-lg font-semibold">
+                  {isCustomPrompt ? "Custom Prompt" : "Choose Style"}
+                </h3>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsCustomPrompt(!isCustomPrompt)}
+                  className="flex items-center gap-2 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                >
+                  {isCustomPrompt ? (
+                    <>
+                      <Palette className="h-4 w-4" />
+                      Choose Style
+                    </>
+                  ) : (
+                    <>
+                      <Edit3 className="h-4 w-4" />
+                      Custom Prompt
+                    </>
+                  )}
+                </Button>
+              </div>
 
-              {/* 风格网格 - 3列，动态高度控制 */}
-              <div className={`grid grid-cols-3 gap-3 mb-4 ${
-                Math.ceil(styles.length / 6) > 1
-                  ? 'grid-rows-2' // 强制2行布局
-                  : '' // 自动行数
-              }`}>
+              {/* 条件渲染：风格选择或自定义输入框 */}
+              {!isCustomPrompt ? (
+                <>
+                  {/* 风格网格 - 3列，动态高度控制 */}
+                  <div className={`grid grid-cols-3 gap-3 mb-4 ${
+                    Math.ceil(styles.length / 6) > 1
+                      ? 'grid-rows-2' // 强制2行布局
+                      : '' // 自动行数
+                  }`}>
                 {styles
                   .slice(currentPage * 6, (currentPage + 1) * 6)
                   .map((style) => (
@@ -283,12 +342,30 @@ export function ConverterSection() {
                   </Button>
                 </div>
               )}
+                </>
+              ) : (
+                /* 自定义提示词输入框 */
+                <div className="space-y-3">
+                  <Textarea
+                    ref={textareaRef}
+                    placeholder="Enter your custom prompt, e.g., Convert this image into a watercolor painting with soft brushstrokes and pastel colors..."
+                    value={customPrompt}
+                    onChange={handleCustomPromptChange}
+                    className="min-h-[184px] max-h-[184px] resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 overflow-y-auto"
+                    style={{ height: '184px' }}
+                    rows={5}
+                  />
+                  <div className="text-xs text-gray-500">
+                    <p>💡 Tip: Describe the artistic effect you want, such as brush types, color styles, textures, etc.</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="space-y-3">
               <Button
                 className="w-full rounded-xl py-6 font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-all"
-                disabled={!uploadedImage || isGenerating}
+                disabled={!uploadedImage || isGenerating || (isCustomPrompt && !customPrompt.trim())}
                 onClick={generateImage}
               >
                 <div className="flex items-center justify-center gap-2">
