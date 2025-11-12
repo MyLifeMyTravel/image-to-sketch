@@ -9,7 +9,7 @@ import { GoogleGenAI } from "@google/genai"
 import { styles } from "@/config/styles"
 
 export function ConverterSection() {
-  const [selectedStyle, setSelectedStyle] = useState(1)
+  const [selectedStyle, setSelectedStyle] = useState("Classic Pencil")
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
@@ -71,7 +71,7 @@ export function ConverterSection() {
       const extension = mimeType.split('/')[1] || 'png'
 
       // 生成文件名
-      const selectedStyleData = styles.find(s => s.id === selectedStyle)
+      const selectedStyleData = styles.find(s => s.name === selectedStyle)
       const styleName = selectedStyleData?.name?.replace(/\s+/g, '_').toLowerCase() || 'sketch'
       const timestamp = new Date().toISOString().slice(0, 10)
       const filename = `${styleName}_${timestamp}.${extension}`
@@ -98,7 +98,7 @@ export function ConverterSection() {
       const base64Data = uploadedImage.split(',')[1] // 移除 data:image/...;base64, 前缀
 
       // 构建提示词 - 按照示例代码的格式
-      const selectedStyleData = styles.find(s => s.id === selectedStyle)
+      const selectedStyleData = styles.find(s => s.name === selectedStyle)
       const prompt = selectedStyleData?.prompt || "Convert this image into a sketch style drawing."
 
       // 如果有图片，将图片添加到提示词中
@@ -139,7 +139,7 @@ export function ConverterSection() {
     } catch (error) {
       console.error("Error generating image:", error)
       // 如果 API 调用失败，使用示例图片作为后备
-      const selectedStyleData = styles.find(s => s.id === selectedStyle)
+      const selectedStyleData = styles.find(s => s.name === selectedStyle)
       setGeneratedImage(selectedStyleData?.preview || "/placeholder.svg")
     } finally {
       setIsGenerating(false)
@@ -220,10 +220,10 @@ export function ConverterSection() {
                   .slice(currentPage * 6, (currentPage + 1) * 6)
                   .map((style) => (
                     <button
-                      key={style.id}
-                      onClick={() => setSelectedStyle(style.id)}
+                      key={style.name}
+                      onClick={() => setSelectedStyle(style.name)}
                       className={`group relative aspect-[4/3] overflow-hidden rounded-xl border-2 transition-all ${
-                        selectedStyle === style.id
+                        selectedStyle === style.name
                           ? "border-blue-500 shadow-lg scale-105"
                           : "border-gray-200 hover:border-blue-400 hover:shadow-md"
                       }`}
@@ -235,7 +235,7 @@ export function ConverterSection() {
                       />
 
                       {/* 选中状态标识 */}
-                      {selectedStyle === style.id && (
+                      {selectedStyle === style.name && (
                         <div className="absolute right-2 top-2 flex size-4 items-center justify-center rounded-full bg-blue-500 shadow-lg">
                           <svg className="size-3 text-white" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                             <path d="M5 13l4 4L19 7"></path>
@@ -348,7 +348,7 @@ export function ConverterSection() {
                   originalImage={uploadedImage}
                   stylizedImage={generatedImage}
                   originalAlt="Original uploaded image"
-                  stylizedAlt={`Generated ${styles.find(s => s.id === selectedStyle)?.name} sketch`}
+                  stylizedAlt={`Generated ${styles.find(s => s.name === selectedStyle)?.name} sketch`}
                   className="w-full rounded-2xl overflow-hidden"
                 />
                 <div className="flex items-center justify-end gap-2">
