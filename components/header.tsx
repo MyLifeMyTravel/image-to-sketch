@@ -73,13 +73,6 @@ export function Header() {
               >
                 FAQ
               </a>
-              <a
-                href="#blog"
-                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                onClick={(e) => handleNavClick(e, 'blog')}
-              >
-                Blog
-              </a>
             </nav>
 
             <div className="flex items-center">

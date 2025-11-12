@@ -27,7 +27,7 @@ export function StyleShowcase({ className }: StyleShowcaseProps) {
 
   
   return (
-    <section id="use-cases" className={`py-16 ${className}`}>
+    <section id="styles" className={`py-16 ${className}`}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight mb-4">

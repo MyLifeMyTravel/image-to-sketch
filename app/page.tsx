@@ -3,6 +3,8 @@ import { HeroSection } from "@/components/hero-section"
 import { ConverterSection } from "@/components/converter-section"
 import { StyleShowcase } from "@/components/style-showcase"
 import { StatsSection } from "@/components/stats-section"
+import { PricingSection } from "@/components/pricing-section"
+import { FaqSection } from "@/components/faq-section"
 
 export default function Home() {
   return (
@@ -13,6 +15,8 @@ export default function Home() {
         <ConverterSection />
         <StyleShowcase />
         <StatsSection />
+        <PricingSection />
+        <FaqSection />
       </main>
     </div>
   )
