@@ -24,7 +24,7 @@ export const styles: StyleConfig[] = [
    {
     name: "Cartoon Sketch",
     preview: "/realistic-pencil-sketch-of-cat.jpg",
-    prompt: "Convert this image into a clean, cute digital cartoon illustration style. Use a medium-weight, solid black outline for all major elements. The coloring should use flat color blocks with simple, soft, light grey shading to add basic dimensionality, add a little color. Avoid complex textures, gradients, or photorealistic details. The overall look must be clean, high-contrast, with a smooth, vector-like digital art aesthetic, and placed against a pure white background.",
+    prompt: "Convert this image into a cartoon-style SKETCH with simplified outlines, slightly exaggerated proportions, and soft, clean shading. Maintain clear character features, use consistent black lines, and keep background minimal.",
     description: "高度逼真的铅笔素描风格，强调手绘质感和专业技法，尤其适合需要忠实还原原图光影与结构的场景。",
     effect: "​生成具有自然石墨颗粒、柔和阴影过渡和清晰笔触的素描图像；确保人物或物体不变形、光影准确；通过纤细线条和中对比度营造细腻、专业的素描效果，避免生硬轮廓。"
   },

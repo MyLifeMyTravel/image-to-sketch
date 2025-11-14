@@ -13,9 +13,11 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { LogOut, User, Settings } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
+import { useRouter } from 'next/navigation'
 
 export function UserInfo() {
   const { user, signOut } = useAuth()
+  const router = useRouter()
   const [isSigningOut, setIsSigningOut] = useState(false)
 
   const handleSignOut = async () => {
@@ -59,7 +61,7 @@ export function UserInfo() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push('/settings/profile')}>
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
         </DropdownMenuItem>
