@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { creemService } from '@/lib/creem'
-import { createClient } from '@/lib/supabase/server'
+import { createSupabaseClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user from Supabase
-    const supabase = createClient()
+    const supabase = createSupabaseClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     if (authError || !user) {
