@@ -37,7 +37,7 @@
 
 ```env
 # Google API Key for Gemini AI
-NEXT_PUBLIC_GOOGLE_API_KEY=AIzaSyCrqJZKAN9HRVGXmhHuwHzdh4j4ro4N9Vc
+NEXT_PUBLIC_GOOGLE_API_KEY=your_google_api_key_here
 
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co

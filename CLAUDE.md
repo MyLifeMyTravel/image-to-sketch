@@ -82,6 +82,7 @@ types/               # TypeScript 类型定义
 └── database.ts      # 数据库类型
 
 docs/                # 文档
+├── SECURITY_RULES.md # 安全规则和密钥管理政策
 └── SUPABASE_SETUP.md # Supabase 设置指南
 
 public/              # 静态资源
@@ -125,6 +126,40 @@ public/              # 静态资源
 4. **类型安全**: TypeScript 严格模式开启，确保类型安全
 5. **组件模式**: 使用 Server Components 和 Client Components 混合架构
 6. **样式规范**: 遵循 shadcn/ui 设计系统，使用 CSS 变量进行主题定制
+
+### 🔐 安全规则（最高优先级）
+
+**绝对禁止**：除了 `.env.local` 文件外，任何地方都不得出现完整的API密钥、Token、Secret等敏感信息。
+
+#### 密钥存储规则
+- ✅ **允许的位置**：只有 `.env.local` 文件可以包含完整密钥
+- ❌ **禁止的位置**：代码文件（.ts, .tsx）、文档文件（.md）、配置文件、Git历史、日志文件
+
+#### 密钥展示格式
+```bash
+# 正确格式 ✅
+NEXT_PUBLIC_GOOGLE_API_KEY=your_google_api_key_here
+SUPABASE_ANON_KEY=your_supabase_anon_key_here
+
+# 错误格式 ❌（切勿这样做！）
+NEXT_PUBLIC_GOOGLE_API_KEY=AIzaSyCrqJZKAN9HRVGXmhHuwHzdh4j4ro4N9Vc
+```
+
+#### 代码审查清单
+提交代码前必须检查：
+- [ ] 确认没有真实的API密钥在代码中
+- [ ] 确认没有真实的密钥在文档中
+- [ ] 确认 `.env.local` 在 `.gitignore` 中
+- [ ] 确认使用占位符格式 `your_xxx_here`
+
+#### 敏感信息类型
+- API Keys（Google AI、OpenAI等）
+- Tokens（JWT、OAuth等）
+- Secrets（Database URLs、Webhook Secrets等）
+- Certificates（SSL、SSH等）
+
+📖 **完整安全规则**: 参考 `docs/SECURITY_RULES.md`
+🚨 **发现泄露**: 立即撤销密钥并重新生成
 
 ### 图像处理流程
 
@@ -202,6 +237,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
 ## 重要文档
 
+- **🔐 安全规则**: `docs/SECURITY_RULES.md` - 完整的密钥管理和安全政策
 - **Supabase 设置指南**: `docs/SUPABASE_SETUP.md` - 详细的认证系统配置说明
 - **环境配置**: 需要配置 Google AI API 和 Supabase 相关环境变量
 - **部署注意**: 生产环境需要配置正确的 OAuth 重定向 URI和环境变量
