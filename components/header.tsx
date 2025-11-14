@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Camera } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/components/auth/auth-provider"
 import { LoginModal } from "@/components/auth/login-modal"
 import { UserInfo } from "@/components/auth/user-info"
 

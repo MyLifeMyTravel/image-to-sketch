@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { LogOut, User, Settings } from 'lucide-react'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth } from '@/components/auth/auth-provider'
 import { useRouter } from 'next/navigation'
 
 export function UserInfo() {

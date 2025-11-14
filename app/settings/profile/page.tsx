@@ -24,7 +24,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from '@/components/ui/breadcrumb'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth } from '@/components/auth/auth-provider'
 import { Upload, User, Settings, CreditCard, LogOut, Menu } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 
