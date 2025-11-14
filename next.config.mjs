@@ -6,9 +6,26 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Configure Turbopack
+  // Configure Turbopack with root directory
   turbopack: {
-    // Empty config to disable webpack fallback
+    root: process.cwd(),
+  },
+  // Vercel optimizations
+  experimental: {
+    // Optimize for Vercel deployment
+    optimizePackageImports: ['lucide-react'],
+  },
+  // Disable strict mode for deployment
+  reactStrictMode: false,
+  // Build timeout optimization
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      }
+    }
+    return config
   },
 }
 
