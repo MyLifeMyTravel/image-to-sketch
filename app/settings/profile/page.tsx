@@ -226,15 +226,19 @@ export default function ProfilePage() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton>
-                    <CreditCard className="size-4" />
-                    <span className="truncate font-medium text-sm">Billing</span>
+                  <SidebarMenuButton asChild>
+                    <a href="/settings/billing">
+                      <CreditCard className="size-4" />
+                      <span className="truncate font-medium text-sm">Billing</span>
+                    </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton>
-                    <Settings className="size-4" />
-                    <span className="truncate font-medium text-sm">Credits</span>
+                  <SidebarMenuButton asChild>
+                    <a href="/settings/credits">
+                      <Settings className="size-4" />
+                      <span className="truncate font-medium text-sm">Credits</span>
+                    </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
