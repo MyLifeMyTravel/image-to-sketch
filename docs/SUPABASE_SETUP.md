@@ -21,8 +21,20 @@
 4. 创建 OAuth 2.0 凭据：
    - 转到 "Credentials" → "Create Credentials" → "OAuth 2.0 Client IDs"
    - 选择 "Web application"
-   - 添加授权重定向 URI：`https://your-project-id.supabase.co/auth/v1/callback`
+   - **重要：添加多个授权重定向 URI：**
+     - `https://fbyakppcnwojibqzxrrs.supabase.co/auth/v1/callback` (Supabase回调)
+     - `http://localhost:3000/api/auth/callback` (本地开发)
+     - `https://your-domain.com/api/auth/callback` (生产环境)
    - 记录 Client ID 和 Client Secret
+
+### 🔧 修复Google OAuth显示问题
+
+**问题：** Google授权显示"以继续前往fbyakppcnwojibqzxrrs.supabase.co"
+
+**解决方案：**
+1. 在Google Cloud Console中添加本地开发重定向URI
+2. 确保应用域名已正确配置
+3. 使用自定义域名提升用户体验
 
 ### 2.2 在 Supabase 中配置 Google OAuth
 
